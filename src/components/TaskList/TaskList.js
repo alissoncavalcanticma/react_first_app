@@ -1,32 +1,52 @@
-//import React com userState
-import React, { useState } from "react";
-//import css
+import React from "react";
 import "./tasklist.css";
-
-//import lib prop-types
 import PropTypes from "prop-types";
+import plusIcon from "../../img/plus-icon.svg";
 
-export default function TaskList({ title }) {
-  const [count, setCount] = useState(0);
+import TaskItem from "../TaskItem/TaskItem";
 
-  const increment = () => {
-    setCount((currentCount) => {
-      return currentCount + 1;
-    });
+export default function TaskList({
+  title,
+  taskState,
+  onAddTask,
+  tasks,
+  onTaskUpdate,
+  onDeleteTask
+}) {
+  const addTask = () => {
+    onAddTask("Nova Tarefa", taskState);
   };
 
   return (
     <div className="tasklist">
       <div className="title">{title}</div>
       <div className="content">
-        {count}
-        <button onClick={increment}>+1</button>
+        {tasks.map((task) => {
+          return (
+            <TaskItem
+              key={task.id}
+              id={task.id}
+              title={task.title}
+              taskState={task.state}
+              onTaskUpdate={onTaskUpdate}
+              onDeleteTask={onDeleteTask}
+            />
+          );
+        })}
+        {tasks.length === 0 && <div className="empty-list">Lista Vazia</div>}
+        <button onClick={addTask} className="btn">
+          <img src={plusIcon} alt="plus" />
+          Adicionar Tarefa
+        </button>
       </div>
     </div>
   );
 }
 
-//Definindo types e restrições com PropTypes
 TaskList.propTypes = {
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  onAddTask: PropTypes.func.isRequired,
+  tasks: PropTypes.array.isRequired,
+  onTaskUpdate: PropTypes.func.isRequired,
+  onDeleteTask: PropTypes.func.isRequired
 };
